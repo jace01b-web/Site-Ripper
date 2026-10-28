@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Site Saver – Website Downloader (.bat generator)</title>
+<style>
+:root{--bg:#07080d;--p1:rgba(255,255,255,.04);--p2:rgba(255,255,255,.07);--line:rgba(255,255,255,.1);--tx:#f1f3fa;--mut:#9aa3b8;--a1:#8b7bff;--a2:#2fd0ff;--ok:#4be3a0;--bad:#ff7a7a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--tx);font:15px/1.6 Inter,system-ui,"Segoe UI",sans-serif;background:var(--bg)}
+body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(700px 420px at 12% -5%,rgba(139,123,255,.3),transparent),radial-gradient(700px 420px at 95% 5%,rgba(47,208,255,.2),transparent),radial-gradient(600px 400px at 50% 110%,rgba(139,123,255,.15),transparent)}
+nav{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 22px;background:rgba(7,8,13,.7);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}.logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--a1),var(--a2));display:grid;place-items:center;color:#07080d;font-style:normal}
+.logo small{font-weight:500;color:var(--mut);margin-left:4px}
+main{max-width:900px;margin:0 auto;padding:34px 18px 20px}
+.hero{text-align:center;margin:10px 0 30px}.hero h1{font-size:clamp(34px,6vw,54px);letter-spacing:-1.5px;margin:0 0 10px;line-height:1.08}
+.g{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mut);max-width:600px;margin:0 auto 16px;font-size:16px}.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.chip{padding:5px 13px;border:1px solid var(--line);border-radius:99px;font-size:13px;color:var(--mut);background:var(--p1)}
+.step{position:relative;background:var(--p1);border:1px solid var(--line);border-radius:18px;padding:22px 22px 18px 70px;margin-bottom:16px}
+.step>.n{position:absolute;left:20px;top:20px;width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#07080d;font-weight:800;display:grid;place-items:center}
+h2{margin:0 0 2px;font-size:18px}.hint{color:var(--mut);font-size:13.5px;margin:0 0 6px}
+label{display:block;font-weight:600;margin:14px 0 6px;font-size:14px}label small{font-weight:400;color:var(--mut)}
+input[type=text],select,textarea{width:100%;background:rgba(0,0,0,.35);color:var(--tx);border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit;outline:0;transition:.15s}
+input:focus,select:focus{border-color:var(--a1);box-shadow:0 0 0 3px rgba(139,123,255,.22)}select option{background:#14161f}
+textarea{font:12px/1.45 Consolas,monospace;height:280px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.row{grid-template-columns:1fr}.step{padding:70px 16px 16px}}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;margin:10px 0;border:1px solid var(--line);border-radius:13px;background:var(--p1);cursor:pointer;font-weight:400;transition:.15s}
+.opt:hover{background:var(--p2)}.opt input{margin-top:5px;accent-color:var(--a1);width:17px;height:17px}.opt b{display:block;font-weight:600}.opt small{color:var(--mut);font-weight:400}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:rgba(0,0,0,.35);border:1px solid var(--line);padding:5px;border-radius:14px;margin-top:10px}
+.seg button{background:transparent;color:var(--mut);padding:12px;border-radius:10px;font-weight:700}.seg button.on{background:linear-gradient(90deg,var(--a1),var(--a2));color:#07080d}
+button{border:0;font:700 15px inherit;cursor:pointer;border-radius:11px;padding:12px 22px;color:#07080d;background:linear-gradient(90deg,var(--a1),var(--a2));transition:.15s}
+button:hover{filter:brightness(1.1)}button.sec{background:var(--p2);color:var(--tx);border:1px solid var(--line)}button.big{width:100%;padding:15px;font-size:16px;margin-top:16px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.note{border-left:3px solid var(--a2);background:rgba(47,208,255,.07);padding:10px 14px;border-radius:0 10px 10px 0;font-size:13.5px;color:#cfe9f3;margin-top:12px}
+.warn{border-color:#ffc857;background:rgba(255,200,87,.08);color:#ffe3a3}.bad{color:var(--bad);margin-top:10px;font-size:14px}.dim{opacity:.4;pointer-events:none}ol{color:var(--mut);padding-left:20px}
+.tbtn{background:var(--p2);color:var(--tx);border:1px solid var(--line);padding:8px 14px;font-size:14px}
+dialog{max-width:640px;width:calc(100% - 28px);border:1px solid var(--line);border-radius:20px;background:#12141d;color:var(--tx);padding:0;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(3,4,8,.75);backdrop-filter:blur(6px)}.dh{padding:20px 24px 6px}.dh h2{font-size:22px}.db{padding:4px 24px;max-height:52vh;overflow:auto;color:#c9cfdd;font-size:14px}.db li{margin:9px 0}.df{padding:16px 24px 22px;display:flex;gap:10px;justify-content:flex-end}
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,90px);background:#1b1e2b;border:1px solid var(--line);padding:11px 20px;border-radius:12px;transition:.3s;z-index:20}#toast.s{transform:translate(-50%,0)}
+footer{text-align:center;color:var(--mut);font-size:13px;padding:24px 0 36px}code{background:var(--p2);padding:1px 6px;border-radius:6px;font-size:12.5px}
+
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}.bg:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(ellipse at 50% 20%,#000 20%,transparent 75%);animation:grid 12s linear infinite}
+.bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:float 14s ease-in-out infinite}.b1{width:420px;height:420px;background:#7a5cff;left:-80px;top:-60px}.b2{width:380px;height:380px;background:#17c5ff;right:-60px;top:120px;animation-delay:-4s}.b3{width:460px;height:460px;background:#c44bff;left:35%;bottom:-200px;animation-delay:-8s;opacity:.3}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,40px) scale(1.12)}66%{transform:translate(-40px,70px) scale(.94)}}
+@keyframes grid{to{background-position:0 46px,46px 0}}@keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}@keyframes shine{to{background-position:-200% 0}}@keyframes blink{50%{opacity:0}}@keyframes pop{0%{transform:scale(.92);opacity:0}100%{transform:none;opacity:1}}
+#prog{position:fixed;left:0;top:0;height:3px;width:0;z-index:30;background:linear-gradient(90deg,var(--a1),var(--a2));box-shadow:0 0 12px var(--a2)}
+.hero h1{animation:up .8s both}.hero p{animation:up .8s .12s both}.chips{animation:up .8s .35s both}.hero .g{background-size:200% 100%;background-image:linear-gradient(90deg,var(--a1),var(--a2),#ff7ad9,var(--a1));animation:shine 6s linear infinite}
+.term{max-width:540px;margin:0 auto 20px;text-align:left;background:rgba(8,10,18,.85);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 60px rgba(90,70,255,.25);animation:up .8s .22s both;overflow:hidden}
+.dots{display:flex;gap:7px;padding:11px 14px;border-bottom:1px solid var(--line)}.dots i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
+.term pre{margin:0;padding:14px 16px;font:13px/1.65 Consolas,monospace;color:#b9f5d8;min-height:112px;white-space:pre-wrap}.term pre:after{content:"▌";animation:blink 1s steps(1) infinite;color:var(--a2)}
+.rv{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s cubic-bezier(.2,.7,.2,1)}.rv.in{opacity:1;transform:none}
+.step{transition:transform .25s,border-color .25s,box-shadow .25s}.step:hover{transform:translateY(-3px);border-color:rgba(139,123,255,.5);box-shadow:0 18px 50px rgba(100,80,255,.18)}.step>.n{box-shadow:0 0 0 0 rgba(139,123,255,.6);animation:pulse 2.6s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.opt:has(input:checked){border-color:var(--a1);background:rgba(139,123,255,.12);box-shadow:0 0 0 1px rgba(139,123,255,.35) inset}
+button{position:relative;overflow:hidden}button:not(.sec):not(.tbtn):before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);background-size:200% 100%;background-position:150% 0;transition:background-position .6s}
+button:not(.sec):not(.tbtn):hover:before{background-position:-50% 0}button:active{transform:scale(.97)}button.big{animation:glow 3s ease-in-out infinite}@keyframes glow{50%{box-shadow:0 0 34px rgba(139,123,255,.55)}}
+.seg button{transition:.25s}#outcard{animation:pop .5s both}.nav-c{display:flex;gap:10px}.chip{transition:.2s}.chip:hover{transform:translateY(-3px);border-color:var(--a1);color:var(--tx)}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style></head><body>
+<div class="bg"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div><div id="prog"></div>
+<nav><div class="logo"><i>◆</i>Site Saver<small>by AniItsuki</small></div><button class="tbtn" id="termsBtn">☰ Terms of Service</button></nav>
+<main>
+<div class="hero"><h1>Save any website to your PC <span class="g">in one click</span></h1>
+<p>Paste a link, pick your options, and Site Saver builds a downloader that saves the site, fixes its links, adds the SDKs it needs and opens it from a local web host.</p>
+<div class="term" aria-hidden="true"><div class="dots"><i></i><i></i><i></i></div><pre id="tl"></pre></div>
+<div class="chips"><span class="chip">⚡ .bat or Terminal</span><span class="chip">📁 Pick your folder</span><span class="chip">🔌 SDK stand-ins</span><span class="chip">🌐 Opens in your browser</span></div></div>
+
+<section class="step"><span class="n">1</span><h2>Website</h2><p class="hint">Paste the full link of the page or game.</p>
+<label for="url">Website URL</label><input type="text" id="url" placeholder="https://example.com/game/index.html">
+<div class="row"><div><label for="name">Folder name</label><input type="text" id="name" placeholder="My Game"></div>
+<div><label for="where">Save to</label><select id="where"><option value="Downloads">Downloads folder</option><option value="Desktop">Desktop</option><option value="Documents">Documents</option><option value="pick">Let me choose (folder picker opens when I run it)</option><option value="custom">Type a custom path…</option></select></div></div>
+<div id="cwrap" style="display:none"><label for="custom">Custom folder <small>(e.g. D:\Games)</small></label><input type="text" id="custom" placeholder="D:\Games"></div></section>
+
+<section class="step"><span class="n">2</span><h2>Settings</h2><p class="hint">What to save and how to open it.</p>
+<div class="row"><div><label for="scope">What to save</label><select id="scope"><option value="dir">This page's folder and everything it uses</option><option value="site">Whole site root</option></select></div>
+<div><label for="browser">Open test copy in</label><select id="browser"><option value="default">Default browser</option><option value="edge">Microsoft Edge</option><option value="chrome">Google Chrome</option></select></div></div>
+<label for="port">Local port</label><input type="text" id="port" value="8137"></section>
+
+<section class="step"><span class="n">3</span><h2>Options</h2><p class="hint">Fine-tune what gets downloaded.</p>
+<label class="opt"><input type="checkbox" id="all" checked><span><b>Download EVERYTHING</b><small>Deep crawl of every page, script, style, image, model, sound, font, video and data file it can find, plus files from other hosts.</small></span></label>
+<label class="opt"><input type="checkbox" id="ext" checked><span><b>Also download files from other hosts</b><small>CDNs, fonts and libraries, saved in <code>_ext</code>.</small></span></label>
+<label class="opt"><input type="checkbox" id="offline"><span><b>Make it fully offline</b><small>Off by default. Rewrites links to the local copy and removes outside scripts, ads and trackers.</small></span></label>
+<div id="sdkbox"><label>SDKs this site needs</label>
+<label for="sdkmode"><small>SDK mode</small></label><select id="sdkmode"><option value="real">Download the real SDK files (keeps working online, full site copy)</option><option value="stub">Offline stand-ins (no network, saves go to localStorage)</option></select>
+<label class="opt"><input type="checkbox" id="s_cg"><span><b>CrazyGames SDK</b></span></label>
+<label class="opt"><input type="checkbox" id="s_poki"><span><b>Poki SDK</b></span></label>
+<label class="opt"><input type="checkbox" id="s_ya"><span><b>Yandex Games SDK</b><small>YaGames</small></span></label>
+<label for="s_cu">Other SDK global name <small>(optional, e.g. GameAnalytics)</small></label><input type="text" id="s_cu" placeholder="MySDK"></div></section>
+
+<section class="step"><span class="n">4</span><h2>Method</h2><p class="hint">How do you want to run the downloader?</p>
+<input type="hidden" id="method" value="bat">
+<div class="seg"><button class="on" data-m="bat">⬇ .bat file (default)</button><button data-m="term">&gt;_ Terminal</button></div>
+<div class="note" id="mhint"></div>
+<button class="big" id="gen">Generate</button><div class="bad" id="err"></div></section>
+
+<section class="step" id="outcard" style="display:none"><span class="n">✓</span><h2 id="outtitle">Your downloader</h2>
+<textarea id="out" readonly spellcheck="false"></textarea>
+<div class="bar"><button id="dl">⬇ Download .bat</button><button class="sec" id="cp">Copy</button></div>
+<ol id="steps"></ol><div class="note" id="note">Sites with logins, live servers or multiplayer will only work partly offline. If a file is missing, the server window prints <code>[missing] path</code>.</div></section>
+</main>
+<footer>Site Saver · Made with ♥ <b class="g">By AniItsuki</b></footer>
+<div id="toast"></div>
+<dialog id="tos"><div class="dh"><h2>Terms of Service</h2><p class="hint">Please read before using Site Saver.</p></div><div class="db"><ol>
+<li><b>Permission only.</b> Use Site Saver only on websites, games and files that you own or have clear permission to copy (your own projects, open-source or public-domain content, or content whose license allows offline copies).</li>
+<li><b>Respect others' rights.</b> Websites, games, art, code and audio are usually protected by copyright and by the site's own terms. You are solely responsible for making sure saving, running or sharing a copy is allowed.</li>
+<li><b>Personal, offline use.</b> Copies are for private testing, backup and offline use. Do not re-upload, sell, redistribute or pass off someone else's work as yours.</li>
+<li><b>No circumvention.</b> Do not use this tool to bypass logins, paywalls, DRM, licensing checks, anti-cheat or rate limits, or to attack, overload or scrape sites against their rules.</li>
+<li><b>Your computer, your risk.</b> The generated script runs PowerShell on your PC. Read it before running it and only run copies of sites you trust. Some sites will not fully work offline.</li>
+<li><b>No warranty.</b> Site Saver is provided "as is". The publisher is not liable for any loss, damage or legal claim resulting from its use. This is not legal advice.</li>
+<li><b>Privacy.</b> Everything happens in your browser and on your PC. The URL you enter is not sent anywhere. Your agreement is saved in this browser only.</li></ol></div>
+<div class="df"><button id="agreeBtn">I Agree</button><button class="sec" id="closeBtn" style="display:none">Close</button></div></dialog>
+
+<script>
+const $=i=>document.getElementById(i);
+const PS=String.raw`$ProgressPreference='SilentlyContinue'
+try{[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12}catch{}
+$startUrl='__URL__'
+$baseUri=[Uri]'__BASE__'
+$siteHost=$baseUri.Host
+$port=__PORT__
+$OFFLINE=__OFFLINE__
+$EXTHOSTS=__EXT__
+$ALL=__ALL__
+$ua='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36 Edg/124.0'
+$headers=@{Referer=$baseUri.GetLeftPart([UriPartial]::Authority)+'/'}
+$utf8=New-Object System.Text.UTF8Encoding $false
+$blocked='google-analytics|googletagmanager|doubleclick|googlesyndication|adservice|adsystem|prebid|taboola|criteo|hotjar|sentry|clarity\.ms|facebook\.net|connect\.facebook|amazon-adsystem|mc\.yandex|poki-gdn'
+$sdkPat='__SDKPAT__'
+$parent=$null
+__PARENT__
+if(-not $parent){$parent=Join-Path $env:USERPROFILE 'Downloads'}
+$out=Join-Path $parent '__FOLDER__'
+New-Item -ItemType Directory -Force -Path $out|Out-Null
+Write-Host ''
+Write-Host '=== Site Saver  -  By AniItsuki ==='  -ForegroundColor Cyan
+Write-Host "Saving to: $out"
+function Get-LocalPath([Uri]$u){
+  $p=[Uri]::UnescapeDataString($u.AbsolutePath);$bp=$baseUri.AbsolutePath
+  if($u.Host -eq $siteHost -and $p.StartsWith($bp)){$rel=$p.Substring($bp.Length)}
+  elseif($u.Host -eq $siteHost){$rel='_root'+$p}
+  else{$rel='_ext/'+$u.Host+$p}
+  if($rel -eq '' -or $rel.EndsWith('/')){$rel+='index.html'}
+  Join-Path $out ($rel -replace '/','\')
+}
+$queue=New-Object System.Collections.Queue;$seen=@{};$extHosts=@{}
+$textExt='.html','.htm','.js','.mjs','.css','.json','.svg','.txt','.webmanifest','.xml'
+function Add-Url([string]$s){
+  try{$u=[Uri]$s}catch{return}
+  if(-not $u.IsAbsoluteUri -or $u.Scheme -notmatch '^https?$'){return}
+  if($u.Host -ne $siteHost){ if(-not $EXTHOSTS){return} }
+  if($OFFLINE -and $u.Host -match $blocked){return}
+  $k=$u.GetLeftPart([UriPartial]::Path)
+  if(-not $seen.ContainsKey($k)){$seen[$k]=1;$queue.Enqueue($k)}
+}
+$rxAny=[regex]'[A-Za-z0-9_\-\./%@~]+\.(?:js|mjs|cjs|css|map|json|jsonp|png|jpe?g|jfif|gif|webp|avif|bmp|tiff?|svg|ico|cur|glb|gltf|obj|mtl|fbx|tga|basis|wasm|mp3|ogg|opus|wav|flac|aac|m4a|wem|bank|woff2?|ttf|otf|eot|ttc|bin|data|dat|pak|pck|unityweb|txt|md|csv|yml|yaml|pdf|zip|html?|php|aspx?|jsp|mp4|webm|swf|br|gz|ktx2?|hdr|dds|pvr|atlas|fnt|xml|mem|symbols|manifest|vue|tsx?)(?![A-Za-z0-9])'
+$rxAbs=[regex]'https?://[^\s"''<>)\\]+'
+$rxRel=[regex]'[A-Za-z0-9_\-\./%@~]+\.(?:js|mjs|css|json|png|jpe?g|gif|webp|svg|ico|avif|glb|gltf|wasm|mp3|ogg|wav|m4a|woff2?|ttf|otf|bin|data|unityweb|txt|html|mp4|webm|br|gz|ktx2?|hdr|dds|atlas|fnt|xml|pck|mem|symbols)\b'
+$rxUse=$rxRel;if($ALL){$rxUse=$rxAny}
+function Process-Text([string]$file,[Uri]$cur){
+  $txt=[IO.File]::ReadAllText($file)
+  foreach($m in $rxAbs.Matches($txt)){Add-Url $m.Value}
+  foreach($m in $rxUse.Matches($txt)){
+    $t=$m.Value
+    if($t.Length -gt 200 -or $t.StartsWith('//')){continue}
+    if($t.StartsWith('/')){Add-Url ('https://'+$siteHost+$t);Add-Url ($baseUri.AbsoluteUri+$t.TrimStart('/'))}
+    else{try{Add-Url ((New-Object Uri $cur,$t).AbsoluteUri)}catch{};try{Add-Url ((New-Object Uri $baseUri,$t).AbsoluteUri)}catch{}}
+  }
+}
+$indexPath=Join-Path $out 'index.html'
+Write-Host 'Downloading main page ...'
+try{Invoke-WebRequest -Uri $startUrl -OutFile $indexPath -UserAgent $ua -Headers $headers -UseBasicParsing -ErrorAction Stop}
+catch{Write-Host 'Could not download the page. Check the link and your internet.' -ForegroundColor Red;Write-Host $_.Exception.Message;return}
+$seen[$baseUri.AbsoluteUri+'index.html']=1;$seen[$baseUri.AbsoluteUri]=1
+Process-Text $indexPath $baseUri
+foreach($sd in @(__SEEDS__)){Add-Url $sd}
+$ok=1;$skip=0
+while($queue.Count -gt 0){
+  if($ok -gt 20000){Write-Host 'Stopped at 20000 files (safety limit).' -ForegroundColor Yellow;break}
+  $url=$queue.Dequeue();$u=[Uri]$url;$lp=Get-LocalPath $u
+  try{
+    New-Item -ItemType Directory -Force -Path (Split-Path $lp) -ErrorAction Stop|Out-Null
+    Invoke-WebRequest -Uri $url -OutFile $lp -UserAgent $ua -Headers $headers -UseBasicParsing -ErrorAction Stop
+    $ok++;Write-Host "[OK]   $url"
+    if($u.Host -ne $siteHost){$extHosts[$u.Host]=1}
+    if($textExt -contains ([IO.Path]::GetExtension($lp).ToLower())){Process-Text $lp $u}
+  }catch{if(Test-Path -LiteralPath $lp -PathType Leaf){Remove-Item -LiteralPath $lp -Force -ErrorAction SilentlyContinue};$skip++}
+}
+Write-Host "Downloaded $ok files ($skip guessed paths did not exist - normal)." -ForegroundColor Green
+if($true){
+  Write-Host 'Linking the copy to the local files ...'
+  $bpEsc=[regex]::Escape($baseUri.AbsolutePath);$hEsc=[regex]::Escape($siteHost)
+  foreach($f in (Get-ChildItem -LiteralPath $out -Recurse -File)){
+    if($textExt -notcontains $f.Extension.ToLower()){continue}
+    $t=[IO.File]::ReadAllText($f.FullName);$t2=$t
+    foreach($h in $extHosts.Keys){$t2=$t2 -replace ('(?i)(?:https?:)?//'+[regex]::Escape($h)+'/'),('/_ext/'+$h+'/')}
+    $t2=$t2 -replace ('(?i)(?:https?:)?//'+$hEsc+$bpEsc),'/'
+    $t2=$t2 -replace ('(?i)(?:https?:)?//'+$hEsc+'/'),'/'
+    if($f.FullName -eq $indexPath){
+      if($OFFLINE){$t2=[regex]::Replace($t2,'(?is)<script\b[^>]*\bsrc\s*=\s*["'']\s*(?:https?:)?//(?!localhost)[^"'']*["''][^>]*>\s*<\/script>','')}
+      if($OFFLINE){$t2=[regex]::Replace($t2,'(?is)<link\b[^>]*\bhref\s*=\s*["'']\s*(?:https?:)?//(?!localhost)[^"'']*["''][^>]*>','')}
+      if($sdkPat){$t2=[regex]::Replace($t2,'(?is)<script\b[^>]*\bsrc\s*=\s*["''][^"'']*(?:'+$sdkPat+')[^"'']*["''][^>]*>\s*<\/script>','')}
+      __INJECT__
+    }
+    if($t2 -ne $t){[IO.File]::WriteAllText($f.FullName,$t2,$utf8)}
+  }
+}
+__SDKFILE__
+$serve=@'
+param([string]$Root,[int]$Port=8137,[string]$BasePath='/',[string]$Proxy='')
+$ErrorActionPreference='SilentlyContinue'
+$mime=@{'.html'='text/html; charset=utf-8';'.htm'='text/html; charset=utf-8';'.js'='application/javascript';'.mjs'='application/javascript';'.css'='text/css';'.json'='application/json';'.wasm'='application/wasm';'.png'='image/png';'.jpg'='image/jpeg';'.jpeg'='image/jpeg';'.gif'='image/gif';'.webp'='image/webp';'.avif'='image/avif';'.svg'='image/svg+xml';'.ico'='image/x-icon';'.mp3'='audio/mpeg';'.ogg'='audio/ogg';'.wav'='audio/wav';'.m4a'='audio/mp4';'.woff'='font/woff';'.woff2'='font/woff2';'.ttf'='font/ttf';'.otf'='font/otf';'.glb'='model/gltf-binary';'.gltf'='model/gltf+json';'.txt'='text/plain';'.mp4'='video/mp4';'.webm'='video/webm'}
+$l=New-Object Net.HttpListener
+$l.Prefixes.Add("http://localhost:$Port/")
+try{$l.Start()}catch{Write-Host "Could not start on port $Port (already running?)";Start-Sleep 5;exit}
+Write-Host "Offline site at http://localhost:$Port/  - close this window to stop"
+while($l.IsListening){
+  $c=$l.GetContext();$res=$c.Response
+  try{
+    $rel=[Uri]::UnescapeDataString($c.Request.Url.AbsolutePath)
+    if($rel -eq '/'){$rel='/index.html'}
+    if($BasePath -ne '/' -and $rel.StartsWith($BasePath)){$rel=$rel.Substring($BasePath.Length-1)}
+    if($rel.EndsWith('/')){$rel+='index.html'}
+    if($rel -match '\.\.'){$res.StatusCode=400}else{
+      $local=Join-Path $Root ($rel.TrimStart('/') -replace '/','\')
+      if(-not (Test-Path -LiteralPath $local -PathType Leaf)){$alt=Join-Path $Root ('_root'+($rel -replace '/','\'));if(Test-Path -LiteralPath $alt -PathType Leaf){$local=$alt}}
+      if(-not (Test-Path -LiteralPath $local -PathType Leaf) -and $Proxy){try{New-Item -ItemType Directory -Force -Path (Split-Path $local)|Out-Null;Invoke-WebRequest -Uri ($Proxy+$rel.TrimStart('/')) -OutFile $local -UseBasicParsing -ErrorAction Stop;Write-Host "[fetched] $rel"}catch{if(Test-Path -LiteralPath $local -PathType Leaf){Remove-Item -LiteralPath $local -Force}}}
+      if(Test-Path -LiteralPath $local -PathType Leaf){
+        $b=[IO.File]::ReadAllBytes($local);$e=[IO.Path]::GetExtension($local).ToLower()
+        if($mime.ContainsKey($e)){$res.ContentType=$mime[$e]}else{$res.ContentType='application/octet-stream'}
+        $res.ContentLength64=$b.Length;$res.OutputStream.Write($b,0,$b.Length)
+      }else{$res.StatusCode=404;Write-Host "[missing] $rel"}
+    }
+  }catch{try{$res.StatusCode=500}catch{}}
+  try{$res.OutputStream.Close()}catch{}
+}
+'@
+Set-Content -LiteralPath (Join-Path $out 'serve.ps1') -Value $serve -Encoding UTF8
+$nl=[string][char]13+[string][char]10
+$launcher='@echo off'+$nl+'start "Site Server" /min powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0serve.ps1" -Root "%~dp0." -Port __PORT__ -BasePath "__BASEPATH__" -Proxy "__PROXY__"'+$nl+'timeout /t 2 >nul'+$nl+'start __BROWSERCMD__ http://localhost:__PORT__/'
+Set-Content -LiteralPath (Join-Path $out 'Start __FOLDER__.bat') -Value $launcher -Encoding ASCII
+Write-Host 'Starting local server and opening your browser ...' -ForegroundColor Cyan
+$q=[char]34
+Start-Process powershell -WindowStyle Minimized -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -File '+$q+$out+'\serve.ps1'+$q+' -Root '+$q+$out+$q+' -Port '+$port+' -BasePath '+$q+'__BASEPATH__'+$q+' -Proxy '+$q+'__PROXY__'+$q)
+Start-Sleep -Seconds 3
+$link="http://localhost:$port/"
+try{Start-Process '__BROWSERPS__' $link -ErrorAction Stop}catch{Start-Process $link}
+Write-Host "Done! Folder: $out" -ForegroundColor Green
+Write-Host "Play again later (offline) with 'Start __FOLDER__.bat' in that folder."`;
+
+const SDK={
+cg:`window.CrazyGames={SDK:W({init:ok,environment:'disabled',game:W({loadingStart:n,loadingStop:n,gameplayStart:n,gameplayStop:n,happytime:n,isInstantMultiplayer:false,settings:{disableChat:false,muteAudio:false},addSettingsChangeListener:n,removeSettingsChangeListener:n,link:''}),ad:W({hasAdblock:()=>Promise.resolve(false),requestAd:(t,cb)=>{setTimeout(()=>{try{cb&&cb.adStarted&&cb.adStarted()}catch(e){}try{cb&&cb.adFinished&&cb.adFinished()}catch(e){}},0);return Promise.resolve()},prefetchAd:n}),banner:W({requestBanner:ok,requestResponsiveBanner:ok,clearBanner:n,clearAllBanners:n}),user:W({isUserAccountAvailable:false,getUser:()=>Promise.resolve(null),getUserToken:()=>Promise.resolve(''),showAuthPrompt:()=>Promise.resolve(null),addAuthListener:n,removeAuthListener:n,systemInfo:{countryCode:'US',locale:'en-US',device:{type:'desktop'}}}),data:W({getItem:k=>{try{return ls.getItem(k)}catch(e){return null}},setItem:(k,v)=>{try{ls.setItem(k,v)}catch(e){}},removeItem:k=>{try{ls.removeItem(k)}catch(e){}},clear:n})})};`,
+poki:`window.PokiSDK=W({init:()=>Promise.resolve(),initWithVideoHB:()=>Promise.resolve(),setDebug:n,gameLoadingStart:n,gameLoadingFinished:n,gameLoadingProgress:n,gameplayStart:n,gameplayStop:n,happyTime:n,roundStart:n,roundEnd:n,captureError:n,commercialBreak:(cb)=>{try{cb&&cb()}catch(e){}return Promise.resolve()},rewardedBreak:(cb)=>{try{cb&&cb(true)}catch(e){}return Promise.resolve(true)},displayAd:n,destroyAd:n,shareableURL:()=>Promise.resolve(''),getURLParam:()=>'',isAdBlocked:()=>false});`,
+ya:`(function(){var st=function(k){return{get:()=>{try{return JSON.parse(ls.getItem(k)||'{}')}catch(e){return{}}},set:o=>{try{ls.setItem(k,JSON.stringify(o))}catch(e){}}}};var pd=st('ya_data'),ps=st('ya_stats');var ysdk=W({environment:{app:{id:'0'},i18n:{lang:'en',tld:'com'},payload:''},features:W({LoadingAPI:{ready:n},GameplayAPI:{start:n,stop:n}}),adv:W({showFullscreenAdv:o=>{var c=(o&&o.callbacks)||{};try{c.onOpen&&c.onOpen()}catch(e){}try{c.onClose&&c.onClose(true)}catch(e){}},showRewardedVideo:o=>{var c=(o&&o.callbacks)||{};try{c.onOpen&&c.onOpen();c.onRewarded&&c.onRewarded();c.onClose&&c.onClose()}catch(e){}},showBannerAdv:()=>Promise.resolve(),hideBannerAdv:()=>Promise.resolve(),getBannerAdvStatus:()=>Promise.resolve({stickyAdvIsShowing:false})}),isAvailableMethod:()=>Promise.resolve(false),getPlayer:()=>Promise.resolve(W({getData:()=>Promise.resolve(pd.get()),setData:o=>{pd.set(o);return Promise.resolve()},getStats:()=>Promise.resolve(ps.get()),setStats:o=>{ps.set(o);return Promise.resolve()},incrementStats:()=>Promise.resolve(),getName:()=>'Player',getPhoto:()=>'',getUniqueID:()=>'offline',isAuthorized:()=>false,getMode:()=>'lite'})),getStorage:()=>Promise.resolve({getItem:k=>ls.getItem(k),setItem:(k,v)=>ls.setItem(k,v),removeItem:k=>ls.removeItem(k),clear:()=>ls.clear()}),on:n,off:n,dispatchEvent:()=>Promise.resolve(),getFlags:()=>Promise.resolve({}),getLeaderboards:()=>Promise.resolve(W({}))});window.YaGames={init:()=>Promise.resolve(ysdk)};})();`
+};
+const SDKPAT={cg:'crazygames-sdk|sdk\\.crazygames',poki:'poki-sdk|PokiSDK|game-cdn\\.poki',ya:'/sdk/_/|yandex[^"\'/]*/games/sdk'};
+
+function build(){
+  const raw=$('url').value.trim();let u;
+  try{u=new URL(/^https?:\/\//i.test(raw)?raw:'https://'+raw)}catch(e){throw'Enter a valid website link.'}
+  const port=parseInt($('port').value,10);if(!(port>1023&&port<65536))throw'Port must be 1024–65535.';
+  let folder=($('name').value.trim()||u.hostname).replace(/[\\\/:*?"<>|]/g,'').trim();if(!folder)folder='Saved Site';
+  let bp='/';
+  if($('scope').value==='dir'){const p=u.pathname;bp=p.endsWith('/')?p:(/\.[A-Za-z0-9]+$/.test(p.split('/').pop())?p.slice(0,p.lastIndexOf('/')+1):p+'/')}
+  const base=u.origin+bp,q=s=>s.replace(/'/g,"''");
+  const w=$('where').value;let parent;
+  if(w==='custom'){const c=$('custom').value.trim();if(!c)throw'Enter a custom folder path.';parent="$parent='"+q(c)+"'"}
+  else parent=w==='pick'?"try{Add-Type -AssemblyName System.Windows.Forms;$d=New-Object System.Windows.Forms.FolderBrowserDialog;$d.Description='Choose where to save the site';$d.ShowNewFolderButton=$true;if($d.ShowDialog() -eq 'OK'){$parent=$d.SelectedPath}}catch{}\nif(-not $parent){Write-Host 'No folder chosen. Cancelled.' -ForegroundColor Yellow;return}":"try{$parent=(New-Object -ComObject Shell.Application).NameSpace('shell:"+(w==='Downloads'?'Downloads':w==='Desktop'?'Desktop':'Personal')+"').Self.Path}catch{}";
+  const off=$('offline').checked,on=k=>$('s_'+k).checked,cu=$('s_cu').value.trim().replace(/[^\w$]/g,'');
+  const keys=['cg','poki','ya'].filter(on);
+  let sdkJs='';
+  const stub=$('sdkmode').value==='stub';
+  const SEED={cg:'https://sdk.crazygames.com/crazygames-sdk-v3.js',poki:'https://game-cdn.poki.com/scripts/v2/poki-sdk.js',ya:'https://yandex.ru/games/sdk/v2'};
+  const seeds=stub?[]:keys.map(k=>"'"+SEED[k]+"'");
+  if(stub&&(keys.length||cu)){
+    sdkJs="(function(){var ls=null;try{ls=window.localStorage}catch(e){}var n=function(){},ok=function(){return Promise.resolve()};"
+    +"function D(){return new Proxy(function(){return D()},{get:function(t,k){return(k==='then'||typeof k==='symbol')?undefined:D()},apply:function(){return D()}})}"
+    +"function W(o){return new Proxy(o,{get:function(t,k){if(k in t)return t[k];if(k==='then'||typeof k==='symbol')return undefined;return D()}})}"
+    +keys.map(k=>SDK[k]).join('')+(cu?"window['"+cu+"']=window['"+cu+"']||D();":'')+"})();";
+  }
+  const pat=stub?keys.map(k=>SDKPAT[k]).join('|'):'';
+  const inj=sdkJs?"$t2=[regex]::Replace($t2,'(?i)(<head[^>]*>)','$1<script src=\"/offline-sdk.js\"><\/script>',1)":'';
+  const sdkFile=sdkJs?"$sdk=@'\n"+sdkJs+"\n'@\nSet-Content -LiteralPath (Join-Path $out 'offline-sdk.js') -Value $sdk -Encoding UTF8":'';
+  const br={edge:['msedge','msedge'],chrome:['chrome','chrome'],default:['','']}[$('browser').value];
+  const ps=PS.split('__URL__').join(q(u.href)).split('__BASEPATH__').join(bp).split('__BASE__').join(q(base))
+   .split('__PORT__').join(port).split('__OFFLINE__').join(off?'$true':'$false').split('__EXT__').join($('ext').checked||$('all').checked||seeds.length?'$true':'$false').split('__ALL__').join($('all').checked?'$true':'$false')
+   .split('__SDKPAT__').join(q(pat)).split('__PARENT__').join(parent).split('__FOLDER__').join(folder.replace(/'/g,"''"))
+   .split('__INJECT__').join(inj).split('__SDKFILE__').join(sdkFile).split('__SEEDS__').join(seeds.join(',')).split('__PROXY__').join(off?'':base)
+   .split('__BROWSERCMD__').join(br[0]).split('__BROWSERPS__').join(br[1]||'http://localhost:'+port+'/');
+  if($('method').value==='term')return '# Site Saver - By AniItsuki\n'+ps;
+  const bat=['@echo off','title Site Saver by AniItsuki - '+folder.replace(/[&|<>^%]/g,''),
+   "powershell -STA -NoProfile -ExecutionPolicy Bypass -Command \"$t=Get-Content -Raw -LiteralPath '%~f0'; $i=$t.LastIndexOf('#'+'PSBEGIN'); & ([scriptblock]::Create($t.Substring($i)))\"",
+   'echo.','pause','exit /b','#PSBEGIN',ps].join('\n');
+  return bat.replace(/\r?\n/g,'\r\n');
+}
+const KEY='sitesaver_tos_v1';let agreed=false;try{agreed=localStorage.getItem(KEY)==='1'}catch(e){}
+const dlg=$('tos');
+function toast(t){const e=$('toast');e.textContent=t;e.className='s';clearTimeout(toast.t);toast.t=setTimeout(()=>e.className='',2400)}
+function openTos(){$('agreeBtn').style.display=agreed?'none':'';$('closeBtn').style.display=agreed?'':'none';if(!dlg.open)dlg.showModal()}
+dlg.addEventListener('cancel',e=>{if(!agreed)e.preventDefault()});
+$('agreeBtn').onclick=()=>{agreed=true;try{localStorage.setItem(KEY,'1')}catch(e){}dlg.close();toast('Agreement saved in this browser')};
+$('closeBtn').onclick=()=>dlg.close();$('termsBtn').onclick=openTos;
+if(!agreed)setTimeout(openTos,150);
+const HINT={bat:'Double-click the downloaded .bat. If Windows says "These files can\'t be opened", right-click the file → Properties → tick Unblock → OK, or use the Terminal method instead.',
+ term:'Open Windows Terminal or PowerShell, paste the script and press Enter. You may have to launch the terminal as administrator (right-click → Run as administrator), for example when saving to a protected folder like C:\\.'};
+function setM(m){$('method').value=m;document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));$('mhint').textContent=HINT[m];$('mhint').classList.toggle('warn',m==='term')}
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>setM(b.dataset.m));setM('bat');
+$('where').onchange=()=>$('cwrap').style.display=$('where').value==='custom'?'block':'none';
+$('gen').onclick=()=>{$('err').textContent='';if(!agreed){openTos();return}
+ try{const b=build(),m=$('method').value;$('out').value=b;$('outcard').style.display='block';
+  $('outtitle').textContent=m==='bat'?'Your .bat file':'Your terminal script';$('dl').style.display=m==='bat'?'':'none';
+  $('steps').innerHTML=m==='bat'?'<li>Click <b>Download .bat</b> and double-click it (Windows may ask: More info → Run anyway).</li><li>It downloads the site, builds the local copy and opens your browser.</li><li>Next time use the <b>Start …bat</b> file inside the saved folder.</li>'
+   :'<li>Click <b>Copy</b>.</li><li>Open Windows Terminal / PowerShell (run as administrator if needed), paste and press Enter.</li><li>It downloads the site and opens it in your browser.</li>';
+  $('outcard').scrollIntoView({behavior:'smooth'})}catch(e){$('err').textContent=e}};
+$('dl').onclick=()=>{const n=($('name').value.trim()||'Site Saver').replace(/[\\\/:*?"<>|]/g,'');const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([$('out').value],{type:'application/octet-stream'}));a.download=n+'.bat';document.body.appendChild(a);a.click();a.remove();toast('Downloading…')};
+$('cp').onclick=async()=>{try{await navigator.clipboard.writeText($('out').value);toast('Copied!')}catch(e){$('out').select();document.execCommand('copy');toast('Copied (selected text)')}};
+
+document.querySelectorAll('.step').forEach((e,i)=>{e.classList.add('rv');e.style.transitionDelay=(i%2*.06)+'s'});
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+addEventListener('scroll',()=>{const h=document.documentElement;$('prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight||1)*100)+'%'},{passive:true});
+(function(){const L=['$ site-saver --url https://your-game.com','> Crawling pages, scripts, models, sounds...','> Saving real SDK files (CrazyGames / Poki / Yandex)','> Linking everything to your local copy','> Starting local web host on :8137','> Opening in your browser... done ✓'];let li=0,ci=0,out='';const el=$('tl');
+function tick(){if(li>=L.length){setTimeout(()=>{li=0;ci=0;out='';tick()},2800);return}const l=L[li];if(ci<l.length){ci++;el.textContent=out+l.slice(0,ci);setTimeout(tick,22)}else{out+=l+'\n';li++;ci=0;if(out.split('\n').length>6)out=out.split('\n').slice(-5).join('\n');setTimeout(tick,380)}}tick()})();
+</script></body></html>
